@@ -17,21 +17,27 @@ that when more data is added, it doesn't have to reallocate memory and copy
 strings around. For explanation purposes, lets say a string builder preallocates 
 20 bytes of empty space: (periods are used for string length visibility)
 
+```php
 $x = '....................'; 
 $xlen = 0; (the real length of our string - it starts at 0 of course)
+```
 
 If we call the String Builders append method with the text 'x1234' it will 
 'insert' (not 'copy and append') the string value at position '0', add the 
 length of the string to a variable so we know how large our string is:
 
+```php
 $x = 'x1234...............';
 $xlen = $xlen + strlen('x1234'); (the current length of our string is now 5)
+```
 
 If we called the appender again with '5678' it would insert the value at 
 position $xlen (which is 5). 
 
+```php
 $x = 'x12345678...........'; (periods used for visibility)
 $xlen = $xlen + strlen('5678'); (the current length of our string is now 9)
+```
 
 When we want the value of the string, a method like .toString() or .str() 
 can be called that would basically return the substring of the string buffer. In
