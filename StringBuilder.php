@@ -20,12 +20,10 @@
  * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  * @link       https://github.com/mikecurry74/stringbuilder
  */
-
 // Only define the class once
 if (!defined('DEF_STRINGBUILDER_CLASS')) {
 
     class StringBuilder {
-
         // {{{ properties
 
         /**
@@ -36,8 +34,8 @@ if (!defined('DEF_STRINGBUILDER_CLASS')) {
          * @var string
          * @access private
          */
-        private $_string = "";
-        
+        private $_string = '';
+
         /**
          * The actual string length of the stored string
          *
@@ -60,70 +58,118 @@ if (!defined('DEF_STRINGBUILDER_CLASS')) {
          * @var integer
          * @access private
          */
-        private $_bufferSize = 262144; // default is 1024 x 256
-        
-        // }}}
-        
-        public function __constructor($string = "", $bufferLength = -1) {
-            
+        private $_bufferSize = 1024;
+
+        /**
+         * Class Constructor
+         *
+         * The StringBuilder constructor, all initialization happens here
+         *
+         * @param string $string Optional. The initial string to add on creation.
+         * @param integer bufferLength $bufferLength Optional. The amount of 
+         * bytes to initially allocate to the string builder.
+         */
+        public function __construct($string = '', $bufferLength = -1) {
             // if not set, use the default
-            if ($bufferLength == -1) {
+            if ($bufferLength === -1) {
                 $bufferLength = $this->_bufferSize;
+            } else {
+                // store the default
+                $this->_bufferSize = $bufferLength;
             }
- 
+
             // initialize the buffer
-            $this->_string = str_pad(" ", $this->_bufferSize - strlen($string));
-            $this->append($string);
+            $this->_string = str_repeat(' ', $bufferLength);
+
+            // append an initial string?
+            if (isset($string[0])) {
+                $this->append($string);
+            }
         }
-        
-        // get the default buffersize
-        public function bufferSize () {
+
+        /**
+         * Default buffer size
+         *
+         * The default buffer size to be allocated
+         *
+         * @return integer Buffer size in bytes.
+         */
+        public function bufferSize() {
             return $this->_bufferSize;
         }
-        
-        // get the actual current buffer size
-        public function getActualBufferSize () {
+
+        /**
+         * Current buffer size
+         *
+         * Returns the total bytes currently in use, includes unused buffer
+         * bytes as well.
+         *
+         * @return integer Current string Buffer size in bytes.
+         */
+        public function getActualBufferSize() {
             return strlen($this->_string);
         }
-        
-        // get the length of the string
+
+        /**
+         * Current string length
+         *
+         * Returns the total string length in bytes, doesn't included unused
+         * buffer spsace. Basically returns your string length.
+         *
+         * @return integer Current string length in bytes.
+         */
         public function length() {
             return $this->_stringLength;
         }
-        
-        // append a string
+
+        /**
+         * Appender function
+         *
+         * This is the function that appends the data to the string.
+         *
+         * @param string $string Required. The string to append
+         */
         public function append($string) {
-            echo $string . " - ";
             $len = strlen($string);
-            echo $len."\n";
-            
-            // if the sum of the string + buffer are greater then the current
-            // buffer length, allocate more space.
-            if ($this->_stringLength + $len > strlen($this->_string)) {
-                $this->_string .= str_pad(" ", $this->_bufferSize);
-            }
-            
-            // insert the string into the buffer
-            for ($i=0; $i < $len; ++$i) {
-                echo $i." - ".$string[$i] ."\n";
-                $this->_string[$this->_stringLength + $i] = $string[$i];
+            $i = 0;
+
+            // do we need to allocate more space?
+            if (!isset($this->_string[$this->_stringLength + $len])) {
+                $this->_string .= str_repeat(' ', $this->_bufferSize);
             }
 
+            // insert the string into the buffer
+            for ($i = 0; $i < $len; ++$i) {
+                $pos = $this->_stringLength + $i;
+                $this->_string[$pos] = $string[$i];
+            }
+
+            //echo $this->_string;
             // update the string length
-            $this->_stringLength = $this->_stringLength + $len;
+            $this->_stringLength += $len;
         }
-        
-        // get the string
+
+        /**
+         * ToString
+         *
+         * Returns the completed string.
+         *
+         * @return string String text.
+         */
         public function toString() {
             if ($this->_stringLength) {
-                return substr($this->_string, 0, $this->_stringLength);
+                if (is_array($this->_string)) {
+                    return substr(implode($this->_string), 0, $this->_stringLength);
+                } else {
+                    return substr($this->_string, 0, $this->_stringLength);
+                }
             } else {
-                return "";
+                return '';
             }
         }
-        
+
     }
-    
-    // we've defined the class
+
+    // we've defined the class, won't need to do this again
     define('DEF_STRINGBUILDER_CLASS', true);
 }
