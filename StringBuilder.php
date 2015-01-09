@@ -21,7 +21,7 @@
  * @link       https://github.com/mikecurry74/stringbuilder
  */
 // Only define the class once
-if (!defined('DEF_STRINGBUILDER_CLASS')) {
+if (!class_exists('StringBuilder')) {
 
     class StringBuilder {
         // {{{ properties
@@ -169,7 +169,4 @@ if (!defined('DEF_STRINGBUILDER_CLASS')) {
         }
 
     }
-
-    // we've defined the class, won't need to do this again
-    define('DEF_STRINGBUILDER_CLASS', true);
 }
