@@ -53,6 +53,7 @@ return substr(buffer, 0, $xlen); // which of course returns 'x12345678'.
 As you can see, the original string is much larger than 9, but we only return
 what we inserted.
 
+<h2>Conclusion</h2>
 Although a string builder can be optimal, it can also be a total bust. There are 
 likely more reasons to just use straight concatenation than a String Builder. 
 When a string is returned using .toString() or .str() it actually creates a copy
@@ -61,3 +62,11 @@ more memory than immutable string manipulation would, as the clear source of the
 speed comes from preallocating a block of memory rather than allocating exactly
 what it needs, and no more. The preallocation saves time by not having to call 
 malloc/realloc every append.
+
+<h2>Discovery</h2>
+Was this all a waste of time? I don't think so, while trying to squeeze every 
+bit of juice out of the StringBuilder I came across something that I'll be write
+about next, which will out-perform PHP's internal string concatenation! 
+
+Want a Hint? 
+StringStream.php
